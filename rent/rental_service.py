@@ -1,6 +1,7 @@
 class RentalService:
     def __init__(self):
         self.items = []
+        self.rented_cars = {}
 
     def add_item(self, item):
         self.items.append(item)
@@ -20,12 +21,19 @@ class RentalService:
         else:
             print("No cars in the rental service.")
 
-    def rent_car(self, car_id):
+    def rent_car(self, car_id, username, days, card_number, expiry_date, cvv):
         if 0 < car_id <= len(self.items):
             car = self.items[car_id - 1]
             if not car.get('is_rented'):
                 car['is_rented'] = True
-                return True, None
+                total_payment = car['price_per_day'] * days
+                payment_info = {
+                    'card_number': card_number,
+                    'expiry_date': expiry_date,
+                    'cvv': cvv
+                }
+                self.add_user_rented_car(username, {'car': car, 'payment_info': payment_info})
+                return True, total_payment
             else:
                 return False, "Car is already rented"
         else:
@@ -41,4 +49,11 @@ class RentalService:
         else:
             return 0
 
+    def get_user_rented_cars(self, username):
+        return self.rented_cars.get(username, [])
 
+    def add_user_rented_car(self, username, car):
+        if username in self.rented_cars:
+            self.rented_cars[username].append(car)
+        else:
+            self.rented_cars[username] = [car]

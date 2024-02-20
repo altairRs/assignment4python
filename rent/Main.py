@@ -2,13 +2,14 @@ from user_service import UserService
 from car import Car
 from rental_service import RentalService
 from csv_manager import CSVManager
+from initial_car_loader import InitialCarLoader
 
 def main():
     user_service = UserService()
     service = RentalService()
-    cars_data = CSVManager.load_data_from_csv('cars.csv')
 
-    for car_data in cars_data:
+    initial_cars = InitialCarLoader.load_initial_cars()
+    for car_data in initial_cars:
         service.add_item(car_data)
 
     while True:
@@ -47,7 +48,45 @@ def main():
             print("Invalid choice. Please try again.")
 
 def user_menu(service, username):
-    pass
+    while True:
+        print("\nUser Menu:")
+        print("1. Rent a Car")
+        print("2. View Rented Cars")
+        print("3. Logout")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            service.show_all_cars()
+            car_id = int(input("Enter the ID of the car you want to rent: "))
+            days = int(input("Enter the number of days for rent: "))
+            card_number = input("Enter your card number: ")
+            expiry_date = input("Enter expiry date (MM/YY): ")
+            cvv = input("Enter CVV: ")
+            success, total_payment = service.rent_car(car_id, username, days, card_number, expiry_date, cvv)
+            if success:
+                print(f"Total payment: {total_payment}")
+                print("Please enter your payment information:")
+                print("Thank you for your payment!")
+            else:
+                print(total_payment)
+
+        elif choice == '2':
+            rented_cars = service.get_user_rented_cars(username)
+            if rented_cars:
+                print("Your rented cars:")
+                for idx, car_info in enumerate(rented_cars, start=1):
+                    print(f"{idx}. Name: {car_info['car']['name']}, Model: {car_info['car']['model']}, "
+                          f"Year: {car_info['car']['year']}, Price per Day: {car_info['car']['price_per_day']}, "
+                          f"Payment Info: {car_info['payment_info']}")
+            else:
+                print("You haven't rented any cars yet.")
+
+        elif choice == '3':
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
 
 def admin_menu(user_service, service):
     while True:
