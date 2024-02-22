@@ -52,7 +52,9 @@ def user_menu(service, username):
         print("\nUser Menu:")
         print("1. Rent a Car")
         print("2. View Rented Cars")
-        print("3. Logout")
+        print("3. Sort Cars by price")
+        print("4. Sort Cars by year")
+        print("5. Exit")
         choice = input("Enter your choice: ")
 
         if choice == '1':
@@ -82,6 +84,19 @@ def user_menu(service, username):
                 print("You haven't rented any cars yet.")
 
         elif choice == '3':
+            sorted_cars = service.sort_cars_by_price()
+            print("Cars sorted by price:")
+            for idx, car in enumerate(sorted_cars, start=1):
+                print(f"{idx}. Name: {car['name']}, Model: {car['model']}, Year: {car['year']}, "
+                      f"Price per Day: {car['price_per_day']}")
+
+        elif choice == '4':
+            sorted_cars = service.sort_cars_by_year()
+            for idx, car in enumerate(sorted_cars, start=1):
+                print(f"{idx}. Name: {car['name']}, Model: {car['model']}, Year: {car['year']}, "
+                      f"Price per Day: {car['price_per_day']}")
+
+        elif choice == '5':
             break
 
         else:

@@ -57,3 +57,11 @@ class RentalService:
             self.rented_cars[username].append(car)
         else:
             self.rented_cars[username] = [car]
+
+    def sort_cars_by_price(self):
+        sorted_cars = sorted(self.items, key=lambda x: x['price_per_day'])
+        return sorted_cars
+
+    def sort_cars_by_year(self):
+        sorted_cars = sorted(self.items, key=lambda x: x['year'])
+        return sorted_cars
